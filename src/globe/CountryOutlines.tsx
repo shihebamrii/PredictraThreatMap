@@ -107,10 +107,6 @@ export function CountryOutlines() {
           { color: new THREE.Color(0x00D0FF).multiplyScalar(1.5), opacity: 0.45, scale: 1.002 },
           // L3: Medium spread
           { color: new THREE.Color(0x00BBFF).multiplyScalar(1.2), opacity: 0.25, scale: 1.004 },
-          // L4: Wide soft glow
-          { color: new THREE.Color(0x0099FF),                     opacity: 0.15, scale: 1.007 },
-          // L5: Widest halo
-          { color: new THREE.Color(0x0077DD),                     opacity: 0.08, scale: 1.011 },
         ];
 
         for (const layer of layers) {
