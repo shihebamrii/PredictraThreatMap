@@ -1,9 +1,9 @@
-const EventSource = require('eventsource');
+const { EventSource } = require('eventsource');
 
 function startCheckpoint(broadcast) {
   console.log("[Checkpoint] Connecting to SSE feed...");
   
-  const es = new EventSource('https://threatmap-api.checkpoint.com/ThreatMap/api/live/stream');
+  const es = new EventSource('https://threatmap-api.checkpoint.com/ThreatMap/api/feed');
 
   es.onopen = () => {
     console.log("[Checkpoint] Connected to SSE feed");
