@@ -6,6 +6,7 @@ const { startBitdefender } = require('./services/scrapers/bitdefender');
 const { startFortinet } = require('./services/scrapers/fortinet');
 const { startKaspersky } = require('./services/scrapers/kaspersky');
 const { startCheckpoint } = require('./services/scrapers/checkpoint');
+const { startSans } = require('./services/scrapers/sans');
 
 const app = express();
 app.use(cors());
@@ -50,7 +51,7 @@ app.get('/api/feed', (req, res) => {
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive'
   });
-  
+
   // Initial flush to establish connection
   res.write(': connected\n\n');
 
@@ -71,6 +72,7 @@ startBitdefender((ev, data) => broadcast(ev, data, 'bitdefender'));
 startFortinet((ev, data) => broadcast(ev, data, 'fortinet'));
 startKaspersky((ev, data) => broadcast(ev, data, 'kaspersky'));
 startCheckpoint((ev, data) => broadcast(ev, data, 'checkpoint'));
+startSans((ev, data) => broadcast(ev, data, 'sans'));
 
 app.listen(PORT, () => {
   console.log(`[Server] SSE Backend listening on http://localhost:${PORT}`);
