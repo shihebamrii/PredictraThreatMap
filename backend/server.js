@@ -1,22 +1,42 @@
 const express = require('express');
 const cors = require('cors');
+const connectDB = require('./config/db');
+const ThreatEvent = require('./models/ThreatEvent');
 const { startBitdefender } = require('./services/scrapers/bitdefender');
 const { startFortinet } = require('./services/scrapers/fortinet');
 const { startKaspersky } = require('./services/scrapers/kaspersky');
+const { startCheckpoint } = require('./services/scrapers/checkpoint');
 
 const app = express();
 app.use(cors());
+
+// Connect to MongoDB
+connectDB();
 
 const PORT = 3001;
 
 // Keep track of connected clients
 let clients = [];
 
-// Helper to broadcast events to all connected clients
-const broadcast = (event, data) => {
+// Helper to broadcast events to all connected clients and save to DB
+const broadcast = async (event, data, sourceApi = 'unknown') => {
   clients.forEach(client => {
     client.res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
   });
+
+  // Save to MongoDB if it's an attack event
+  if (event === 'attack') {
+    try {
+      const newThreat = new ThreatEvent({
+        ...data,
+        source_api: sourceApi
+      });
+      // Save without awaiting strictly to not block the event loop aggressively
+      newThreat.save().catch(err => console.error("[MongoDB] Error saving event:", err.message));
+    } catch (err) {
+      console.error("[MongoDB] Error saving event:", err.message);
+    }
+  }
 };
 
 // SSE Endpoint
@@ -43,9 +63,10 @@ app.get('/api/feed', (req, res) => {
 });
 
 // Start Scraping Services
-startBitdefender(broadcast);
-startFortinet(broadcast);
-startKaspersky(broadcast);
+startBitdefender((ev, data) => broadcast(ev, data, 'bitdefender'));
+startFortinet((ev, data) => broadcast(ev, data, 'fortinet'));
+startKaspersky((ev, data) => broadcast(ev, data, 'kaspersky'));
+startCheckpoint((ev, data) => broadcast(ev, data, 'checkpoint'));
 
 app.listen(PORT, () => {
   console.log(`[Server] SSE Backend listening on http://localhost:${PORT}`);
