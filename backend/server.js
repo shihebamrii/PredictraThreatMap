@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
@@ -7,6 +8,8 @@ const { startFortinet } = require('./services/scrapers/fortinet');
 const { startKaspersky } = require('./services/scrapers/kaspersky');
 const { startCheckpoint } = require('./services/scrapers/checkpoint');
 const { startSans } = require('./services/scrapers/sans');
+const { startThreatFox } = require('./services/scrapers/threatfox');
+const { startUrlhaus } = require('./services/scrapers/urlhaus');
 
 const app = express();
 app.use(cors());
@@ -73,6 +76,8 @@ startFortinet((ev, data) => broadcast(ev, data, 'fortinet'));
 startKaspersky((ev, data) => broadcast(ev, data, 'kaspersky'));
 startCheckpoint((ev, data) => broadcast(ev, data, 'checkpoint'));
 startSans((ev, data) => broadcast(ev, data, 'sans'));
+startThreatFox((ev, data) => broadcast(ev, data, 'threatfox'));
+startUrlhaus((ev, data) => broadcast(ev, data, 'urlhaus'));
 
 app.listen(PORT, () => {
   console.log(`[Server] SSE Backend listening on http://localhost:${PORT}`);
