@@ -85,7 +85,7 @@ export function Sidebar() {
   return (
     <div style={{
       position: 'fixed',
-      top: 20,
+      top: 80,
       right: 20,
       bottom: 20,
       width: 360,
