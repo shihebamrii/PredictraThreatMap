@@ -41,6 +41,7 @@ async function startSans(broadcast) {
                             a_c: parseInt(item.attacks) || 1,
                             a_n: `[SANS] Port Scan / Firewall Probe (Port ${item.port || 'unk'})`,
                             a_t: 'exploit',
+                            s_ip: ip,
                             s_co: geo.country || 'UN',
                             s_la: lat,
                             s_lo: lon,

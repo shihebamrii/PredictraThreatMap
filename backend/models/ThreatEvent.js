@@ -10,7 +10,9 @@ const threatEventSchema = new mongoose.Schema({
     d_co: { type: String, required: true },
     d_la: { type: Number, required: true },
     d_lo: { type: Number, required: true },
-    timestamp: { type: Date, default: Date.now },
+    s_ip: { type: String, default: 'unknown' },
+    d_ip: { type: String, default: 'unknown' },
+    timestamp: { type: Date, default: Date.now, expires: 3600 },
     source_api: { type: String, required: true } // e.g., 'bitdefender', 'fortinet', 'kaspersky', 'checkpoint'
 });
 

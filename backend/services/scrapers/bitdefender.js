@@ -89,9 +89,11 @@ function startBitdefender(broadcast) {
         a_c: 1,
         a_n: event.v || event.n || 'Bitdefender Threat',
         a_t: a_t,
+        s_ip: (from && (from.ip || from.host)) || 'unknown',
         s_co: countryCode((from && (from.c || from.c_iso)) || 'UN'),
         s_la: Number(s_la),
         s_lo: Number(s_lo),
+        d_ip: (to && (to.ip || to.host)) || 'unknown',
         d_co: countryCode((to && (to.c || to.c_iso)) || 'UN'),
         d_la: Number(d_la),
         d_lo: Number(d_lo)

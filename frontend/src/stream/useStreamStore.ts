@@ -15,6 +15,9 @@ interface StreamState {
   status: ConnectionStatus;
   reconnectAttempts: number;
 
+  // Navigation
+  currentView: 'map' | 'history';
+
   // Events
   eventBuffer: RingBuffer<ThreatEvent>;
   recentEvents: ThreatEvent[];
@@ -53,6 +56,7 @@ interface StreamState {
   incrementReconnect: () => void;
   tick: (now: number) => void;
   setConfig: (key: string, value: unknown) => void;
+  setView: (view: 'map' | 'history') => void;
   initStream: () => void;
   _cleanup: (() => void) | null;
 }
@@ -60,6 +64,7 @@ interface StreamState {
 export const useStreamStore = create<StreamState>((set, get) => ({
   status: 'disconnected',
   reconnectAttempts: 0,
+  currentView: 'map',
   eventBuffer: new RingBuffer<ThreatEvent>(MAX_EVENTS),
   recentEvents: [],
   counterData: null,
@@ -238,6 +243,10 @@ export const useStreamStore = create<StreamState>((set, get) => ({
     }));
   },
 
+  setView: (view: 'map' | 'history') => {
+    set({ currentView: view });
+  },
+
   initStream: () => {
     const state = get();
     if (state._cleanup) state._cleanup();
@@ -291,6 +300,9 @@ export const useStreamStore = create<StreamState>((set, get) => ({
               d_co: String(data.d_co || '??').slice(0, 2).toUpperCase(),
               d_la: Math.max(-90, Math.min(90, Number(data.d_la) || 0)),
               d_lo: Math.max(-180, Math.min(180, Number(data.d_lo) || 0)),
+              s_ip: data.s_ip || 'unknown',
+              d_ip: data.d_ip || 'unknown',
+              source_api: data.source_api || 'stream',
               ts: new Date().toISOString(),
             };
 

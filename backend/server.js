@@ -19,8 +19,9 @@ connectDB();
 
 const PORT = process.env.PORT || 3001;
 
-// Keep track of connected clients
+// Keep track of connected clients and database toggle
 let clients = [];
+let isDatabaseEnabled = true;
 
 // Helper to broadcast events to all connected clients and save to DB
 const broadcast = async (event, data, sourceApi = 'unknown') => {
@@ -32,12 +33,14 @@ const broadcast = async (event, data, sourceApi = 'unknown') => {
     client.res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
   });
 
-  // Save to MongoDB if it's an attack event
-  if (event === 'attack') {
+  // Save to MongoDB if it's an attack event and database is enabled
+  if (event === 'attack' && isDatabaseEnabled) {
     try {
       const newThreat = new ThreatEvent({
         ...data,
-        source_api: sourceApi
+        source_api: sourceApi,
+        s_ip: data.s_ip || 'unknown',
+        d_ip: data.d_ip || 'unknown'
       });
       // Save without awaiting strictly to not block the event loop aggressively
       newThreat.save().catch(err => console.error("[MongoDB] Error saving event:", err.message));
@@ -68,6 +71,32 @@ app.get('/api/feed', (req, res) => {
     console.log(`[SSE] Client disconnected: ${clientId}`);
     clients = clients.filter(c => c.id !== clientId);
   });
+});
+
+// Database Toggle Endpoints
+app.get('/api/db/on', (req, res) => {
+  isDatabaseEnabled = true;
+  console.log('[Database] Storage ENABLED via URL');
+  res.send('MongoDB Storage is now ENABLED. Attacks will be saved.');
+});
+
+app.get('/api/db/off', (req, res) => {
+  isDatabaseEnabled = false;
+  console.log('[Database] Storage DISABLED via URL');
+  res.send('MongoDB Storage is now DISABLED. Attacks will not be saved.');
+});
+
+// History Endpoint
+app.get('/api/history', async (req, res) => {
+  try {
+    const history = await ThreatEvent.find()
+      .sort({ timestamp: -1 })
+      .limit(100);
+    res.json(history);
+  } catch (error) {
+    console.error('[API] Error fetching history:', error.message);
+    res.status(500).json({ error: 'Failed to fetch attack history' });
+  }
 });
 
 // Start Scraping Services

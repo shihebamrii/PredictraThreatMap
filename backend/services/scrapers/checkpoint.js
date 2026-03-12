@@ -34,9 +34,11 @@ function startCheckpoint(broadcast) {
         a_c: data.a_c || 1,
         a_n: data.a_n || 'Checkpoint Threat',
         a_t: (['exploit', 'malware', 'phishing'].includes(data.a_t) ? data.a_t : 'exploit'),
+        s_ip: data.s_ip || 'unknown',
         s_co: data.s_co || 'UN',
         s_la: Number(data.s_la) || 0,
         s_lo: Number(data.s_lo) || 0,
+        d_ip: data.d_ip || 'unknown',
         d_co: data.d_co || 'UN',
         d_la: Number(d_la_mapped) || 0,
         d_lo: Number(d_lo_mapped) || 0

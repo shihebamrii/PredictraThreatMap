@@ -82,6 +82,7 @@ async function startThreatFox(broadcast) {
           a_c: 1,
           a_n: `[ThreatFox] ${item.threat_type_desc || 'IoC'}: ${item.malware_printable || 'Unknown Malware'}`,
           a_t,
+          s_ip: host,
           s_co: geo.country || 'UN',
           s_la: lat + (Math.random() - 0.5) * 1,
           s_lo: lon + (Math.random() - 0.5) * 1,

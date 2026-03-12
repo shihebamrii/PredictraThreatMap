@@ -82,6 +82,7 @@ async function startUrlhaus(broadcast) {
           a_c: 1,
           a_n: `[URLhaus] Malware Distribution: ${item.threat || 'unknown'} (${host})`,
           a_t: 'malware',
+          s_ip: host,
           s_co: geo.country || 'UN',
           s_la: lat + (Math.random() - 0.5) * 1,
           s_lo: lon + (Math.random() - 0.5) * 1,

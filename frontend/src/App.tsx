@@ -3,11 +3,13 @@ import { GlobeScene } from './globe/GlobeScene';
 import { Sidebar } from './ui/Sidebar';
 import { StatusBar } from './ui/StatusBar';
 import { PerfOverlay } from './ui/PerfOverlay';
+import { HistoryPage } from './ui/HistoryPage';
 import { useStreamStore } from './stream/useStreamStore';
 import './index.css';
 
 function App() {
   const initStream = useStreamStore(s => s.initStream);
+  const currentView = useStreamStore(s => s.currentView);
 
   useEffect(() => {
     // Check reduced motion preference
@@ -29,8 +31,11 @@ function App() {
 
   return (
     <>
-      {/* Full-screen 3D Globe */}
-      <GlobeScene />
+      {/* Full-screen 3D Globe - only active in map view */}
+      {currentView === 'map' && <GlobeScene />}
+
+      {/* History Page overlay */}
+      {currentView === 'history' && <HistoryPage />}
 
       {/* Background grid overlay */}
       <div className="grid-overlay" />

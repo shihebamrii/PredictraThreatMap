@@ -76,6 +76,8 @@ export function Sidebar() {
   const typeDistribution = useStreamStore(s => s.typeDistribution);
   const recentEvents = useStreamStore(s => s.recentEvents);
   const activeArcCount = useStreamStore(s => s.activeArcCount);
+  const currentView = useStreamStore(s => s.currentView);
+  const setView = useStreamStore(s => s.setView);
 
   const total = counterData?.today || totalAttacks;
   const distTotal = typeDistribution.exploit + typeDistribution.malware + typeDistribution.phishing || 1;
@@ -83,7 +85,7 @@ export function Sidebar() {
   return (
     <div style={{
       position: 'fixed',
-      top: 80,
+      top: 20,
       right: 20,
       bottom: 20,
       width: 360,
@@ -96,6 +98,52 @@ export function Sidebar() {
       scrollbarWidth: 'thin',
       scrollbarColor: '#1a2a3a #05080F',
     }}>
+      {/* View Toggle */}
+      <GlassPanel style={{ padding: '8px', background: 'rgba(0, 209, 255, 0.05)' }}>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button 
+            onClick={() => setView('map')}
+            style={{
+              flex: 1,
+              padding: '8px 12px',
+              background: currentView === 'map' ? 'rgba(0, 209, 255, 0.2)' : 'transparent',
+              border: `1px solid ${currentView === 'map' ? 'rgba(0, 209, 255, 0.4)' : 'transparent'}`,
+              color: currentView === 'map' ? '#fff' : theme.colors.textDim,
+              borderRadius: '8px',
+              fontFamily: theme.fonts.display,
+              fontSize: '11px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              textTransform: 'uppercase',
+              letterSpacing: '1px'
+            }}
+          >
+            Live Map
+          </button>
+          <button 
+            onClick={() => setView('history')}
+            style={{
+              flex: 1,
+              padding: '8px 12px',
+              background: currentView === 'history' ? 'rgba(0, 209, 255, 0.2)' : 'transparent',
+              border: `1px solid ${currentView === 'history' ? 'rgba(0, 209, 255, 0.4)' : 'transparent'}`,
+              color: currentView === 'history' ? '#fff' : theme.colors.textDim,
+              borderRadius: '8px',
+              fontFamily: theme.fonts.display,
+              fontSize: '11px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              textTransform: 'uppercase',
+              letterSpacing: '1px'
+            }}
+          >
+            Attack History
+          </button>
+        </div>
+      </GlassPanel>
+
       {/* Live Metrics */}
       <GlassPanel>
         <div style={{ marginBottom: 8 }}>

@@ -13,6 +13,9 @@ export interface ThreatEvent {
   d_co: string;
   d_la: number;
   d_lo: number;
+  s_ip?: string;
+  d_ip?: string;
+  source_api?: string;
   severity?: 1 | 2 | 3 | 4 | 5;
   ts: string;
   meta?: Record<string, unknown>;
